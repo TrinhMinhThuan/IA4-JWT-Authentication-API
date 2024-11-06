@@ -20,9 +20,13 @@ export class AppController {
   @Post('login')
   async login(@Body() body: { key: string; password: string }) {
     const { key, password } = body;
+    const tryFindUser = this.userService.findByUsernameOrEmail(key);
+    if (!tryFindUser) {
+      throw new HttpException('Tài khoản không tồn tại.', HttpStatus.UNAUTHORIZED);
+    }
     const user = await this.authService.validateUser(key, password);
     if (!user) {
-      throw new HttpException('Tài khoản không tồn tại.', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Mật khẩu không chính xác.', HttpStatus.UNAUTHORIZED);
     }
     const token = await this.authService.login(user);
     return {
