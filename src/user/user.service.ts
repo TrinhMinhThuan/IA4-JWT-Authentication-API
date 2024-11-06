@@ -101,7 +101,7 @@ export class UserService {
         return this.userRepository
         .createQueryBuilder('user')
         .where('user.username COLLATE utf8mb4_bin = :key', { key })
-        .orWhere('user.email = :key', { key })
+        .orWhere({ email: key })
         .getOne();
     }
 }
